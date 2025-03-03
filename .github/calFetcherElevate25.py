@@ -6,7 +6,7 @@ import icalendar
 
 # Base URL for Elevate Festival program
 BASE_URL = "https://elevate.at/de/diskurs/programm/"
-OUTPUT = "./tmp/elevate25.ical"
+OUTPUT = "./tmp/elevate25.ics"
 CET = pytz.timezone("Europe/Vienna")
 
 BAD_STRINGS = ['–>Tickets hier erhältlich', '–> Tickets hier erhältlich']
