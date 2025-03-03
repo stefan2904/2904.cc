@@ -61,8 +61,6 @@ jobs:
 
       - name: Run cal fetcher scripts
         run: |
-          pwd
-          ls
           python3 ./.github/calFetcherElevate25.py
           python3 ./.github/verifyIcal.py ./tmp/elevate25.ics
         shell: bash
