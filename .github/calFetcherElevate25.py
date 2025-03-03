@@ -11,8 +11,8 @@ CET = pytz.timezone("Europe/Vienna")
 
 BAD_STRINGS = ['–>Tickets hier erhältlich', '–> Tickets hier erhältlich']
 
-# "Last updated" string:
-LASTUPDATE = "Last Update: {}".format(datetime.now().strftime("%Y-%m-%d %H:%M"))
+# "Last updated" string, in CET timezone
+LASTUPDATE = "Last Update: {}".format(datetime.now().astimezone(CET).strftime("%Y-%m-%d %H:%M:%S"))
 
 
 def get_event_links():
