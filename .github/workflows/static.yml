@@ -51,6 +51,14 @@ jobs:
         env:
           STATUSFILE: index.html
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12' 
+          cache: 'pip' # caching pip dependencies
+      
+      - run: pip install -r ./.github/requirements.txt
+
       - name: Run cal fetcher scripts
         run: |
           pwd
