@@ -114,9 +114,10 @@ def event2String(event):
 def events2Ical(events):
     """Convert a list of events into an iCal file."""
     cal = icalendar.Calendar()
-    cal.add('prodid', '-//Elevate Festival//elevate.at//')
+    cal.add('prodid', '-//Elevate 2025 Diskursprogramm//elevate.at//DE')
     cal.add('version', '2.0')
-    
+    cal.add('method', 'PUBLISH')
+                 
     for event in events:
         description = ""
         if event["subtitle"]:
