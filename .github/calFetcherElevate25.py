@@ -6,6 +6,7 @@ import icalendar
 
 # Base URL for Elevate Festival program
 BASE_URL = "https://elevate.at/de/diskurs/programm/"
+OUTPUT = "../tmp/elevate25.ical"
 CET = pytz.timezone("Europe/Vienna")
 
 BAD_STRINGS = ['–>Tickets hier erhältlich', '–> Tickets hier erhältlich']
@@ -128,7 +129,7 @@ def events2Ical(events):
         
         cal.add_component(ical_event)
     
-    with open("/tmp/elevate.ics", "wb") as f:
+    with open(OUTPUT, "wb") as f:
         f.write(cal.to_ical())
 
 
