@@ -38,7 +38,7 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v3
         
-      - name: Run script
+      - name: Run statusfile script
         run: |
           echo "" >> $STATUSFILE
           echo "<!--" >> $STATUSFILE
@@ -50,6 +50,14 @@ jobs:
         shell: bash
         env:
           STATUSFILE: index.html
+
+      - name: Run cal fetcher scripts
+        run: |
+          pwd
+          ls
+          python3 ./.github/calFetcherElevate25.py
+          python3 ./.github/verifyIcal.py ./tmp/elevate25.ics
+        shell: bash
         
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
