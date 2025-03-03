@@ -12,7 +12,7 @@ CET = pytz.timezone("Europe/Vienna")
 BAD_STRINGS = ['–>Tickets hier erhältlich', '–> Tickets hier erhältlich']
 
 # "Last updated" string, in CET timezone
-LASTUPDATE = "Last Update: {}".format(datetime.now().astimezone(CET).strftime("%Y-%m-%d %H:%M:%S"))
+LASTUPDATE = "Last calendar update: {}".format(datetime.now().astimezone(CET).strftime("%Y-%m-%d %H:%M:%S"))
 
 
 def get_event_links():
@@ -118,7 +118,11 @@ def events2Ical(events):
     cal.add('version', '2.0')
     
     for event in events:
-        description = f"{event['description']}"
+        description = ""
+        if event["subtitle"]:
+            description += f"{event['subtitle']}\n"
+        description += f"{event['date']} {event['time']}\n\n"
+        description += f"{event['description']}"
         if event["speakers"]:
             description += "\n\nSpeakers:\n" + "\n".join(event["speakers"])
         description += f"\n\nMore info: {event['url']}"
