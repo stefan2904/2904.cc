@@ -63,6 +63,7 @@ jobs:
         run: |
           python3 ./.github/calFetcherElevate26.py
           python3 ./.github/verifyIcal.py ./tmp/elevate26.ics
+          cp ./tmp/elevate26.ics ./tmp/elevate.ics
         shell: bash
         
       - name: Upload artifact
