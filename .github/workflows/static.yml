@@ -61,8 +61,8 @@ jobs:
 
       - name: Run cal fetcher scripts
         run: |
-          python3 ./.github/calFetcherElevate25.py
-          python3 ./.github/verifyIcal.py ./tmp/elevate25.ics
+          python3 ./.github/calFetcherElevate26.py
+          python3 ./.github/verifyIcal.py ./tmp/elevate26.ics
         shell: bash
         
       - name: Upload artifact
