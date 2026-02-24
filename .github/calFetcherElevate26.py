@@ -16,14 +16,25 @@ LASTUPDATE = "Last calendar update: {}".format(datetime.now().astimezone(CET).st
 
 
 def get_event_links():
-    """Fetch the event listing page and extract individual event links."""
+    """Fetch listing page and extract event url + row date/time."""
     response = requests.get(BASE_URL)
     if response.status_code != 200:
         print("Failed to fetch the program page")
         return []
     
     soup = BeautifulSoup(response.text, 'html.parser')
-    event_links = ["https://elevate.at" + event['href'] for event in soup.select(".tagedheadline a")]
+    event_links = []
+    for row in soup.select(".table-responsive[data-date] tr"):
+        event_link = row.select_one(".tagedheadline a")
+        time_cell = row.select_one("td.time")
+        table = row.find_parent("div", class_="table-responsive")
+        date_heading = soup.select_one(f'h2[data-date="{table.get("data-date")}"]') if table else None
+        if event_link:
+            event_links.append({
+                "url": "https://elevate.at" + event_link["href"],
+                "date": date_heading.get_text(strip=True) if date_heading else None,
+                "time": time_cell.get_text(" ", strip=True) if time_cell else None,
+            })
     return event_links
 
 
@@ -36,7 +47,7 @@ def parse_datetime(date_text, time_text):
     date_text = date_text.replace("Mittwoch, ", "Wednesday, ").replace("Donnerstag, ", "Thursday, ").replace("Freitag, ", "Friday, ").replace("Samstag, ", "Saturday, ").replace("Sonntag, ", "Sunday, ").replace("März", "March")
     time_text = time_text.replace(" - ", " - ").replace(" Uhr", "")
     
-    start_time, end_time = time_text.split(" - ")
+    start_time, end_time = [t.strip() for t in time_text.replace("–", "-").split("-")]
     start_time = datetime.strptime(start_time, "%H:%M")
     end_time = datetime.strptime(end_time, "%H:%M")
     
@@ -60,7 +71,7 @@ def remove_bad_strings(texts):
     return new_texts
 
 
-def scrape_event_page(url):
+def scrape_event_page(url, date_override=None, time_override=None):
     """Scrape individual event pages and extract metadata."""
     response = requests.get(url)
     if response.status_code != 200:
@@ -74,11 +85,11 @@ def scrape_event_page(url):
 
     # Updated date extraction
     date_element = soup.select_one("div.date h2")
-    date = date_element.get_text(strip=True) if date_element else None
+    date = date_override or (date_element.get_text(strip=True) if date_element else None)
     if not date:
         print(f"Warning: No date found for event {title} at {url}")
 
-    time = soup.find("span", class_="time").get_text(strip=True) if soup.find("span", class_="time") else None
+    time = time_override or (soup.find("span", class_="time").get_text(strip=True) if soup.find("span", class_="time") else None)
     location = soup.find("span", class_="location").get_text(strip=True) if soup.find("span", class_="location") else None
     
     description = [p.get_text(strip=True, separator=" ") for p in soup.select(".detail p")]
@@ -148,7 +159,7 @@ def main():
     event_links = get_event_links()
     
     for link in event_links:
-        event_data = scrape_event_page(link)
+        event_data = scrape_event_page(link["url"], link.get("date"), link.get("time"))
         if event_data:
             events_list.append(event_data)
     
